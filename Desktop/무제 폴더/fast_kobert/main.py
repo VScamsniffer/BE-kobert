@@ -11,7 +11,7 @@ import os
 from kobert_tokenizer import KoBERTTokenizer
 from kobert.pytorch_kobert import get_pytorch_kobert_model
 import torch.nn as nn
-import whisper  # ✅ Whisper 추가
+import whisper  # Whisper 추가
 from pydub import AudioSegment
 from pydub.utils import which
 import logging
@@ -45,9 +45,9 @@ logger = logging.getLogger(__name__)
 # print("모델 로드 완료:",model is not None)
 
 TEMP_DIR = os.path.join(os.getcwd(), "temp_files")
-os.makedirs(TEMP_DIR, exist_ok=True)  # ✅ 폴더 없으면 생성
+os.makedirs(TEMP_DIR, exist_ok=True)  # 폴더 없으면 생성
 
-# ✅ BERTClassifier 모델 정의
+# BERTClassifier 모델 정의
 class BERTClassifier(nn.Module):
     def __init__(self, hidden_size=768, num_classes=2):
         super(BERTClassifier, self).__init__()
@@ -82,7 +82,7 @@ whisper_model = whisper.load_model("base")
 @app.post("/upload-audio/")
 async def upload_audio_file(file: UploadFile = File(...)):
     """음성 파일을 업로드하고 변환 후 분석"""
-    logger.info("[📌 요청] 파일 업로드 및 분석 요청")
+    logger.info("[요청] 파일 업로드 및 분석 요청")
 
     # 파일 확장자 확인
     ext = os.path.splitext(file.filename)[1].lower()
@@ -114,7 +114,7 @@ async def upload_audio_file(file: UploadFile = File(...)):
             logger.error(f"🚨 [오류] WAV 파일이 존재하지 않음: {wav_file_path}")
             raise HTTPException(status_code=500, detail="WAV 변환 후 파일이 존재하지 않습니다.")
 
-        logger.info(f"[🎙️ STT 시작]: {wav_file_path}")
+        logger.info(f"[STT 시작]: {wav_file_path}")
 
         # 🔹 STT 실행
         text = audio_to_text(wav_file_path)
@@ -122,7 +122,7 @@ async def upload_audio_file(file: UploadFile = File(...)):
         if text.startswith("Whisper 변환 실패"):
             raise HTTPException(status_code=500, detail=text)
 
-        logger.info(f"[🔍 분석할 텍스트]: {text}")
+        logger.info(f"[분석할 텍스트]: {text}")
 
         probability = analyze_text(text) * 100
 
